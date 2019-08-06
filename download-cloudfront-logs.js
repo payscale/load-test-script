@@ -13,7 +13,7 @@ var s3 = new AWS.S3();
 
 var timestamp = args.timestamp;
 var bucketName = args.bucketName;
-var folderName = args.s3folder;
+var s3folder = args.s3folder;
 var cloudfrontId = args.cloudfrontId;
 
 /** Download and unzip a file */
@@ -27,7 +27,7 @@ const downloadFile = (key) => {
     Key: key
   };
 
-  const fileName = `./data/${key.slice(folderName.length + cloudfrontId.length + 2, -3)}.txt`;
+  const fileName = `./data/${key.slice(s3folder.length + cloudfrontId.length + 2, -3)}.txt`;
 
   const writeStream = fs.createWriteStream(fileName);
   s3.getObject(params).createReadStream().pipe(zlib.createGunzip()).pipe(writeStream);
@@ -45,7 +45,7 @@ const downloadFiles = () => {
 
   s3.listObjects({
     Bucket: bucketName,
-    Prefix: `${folderName}/${cloudfrontId}.${timestamp}`
+    Prefix: `${s3folder}/${cloudfrontId}.${timestamp}`
   }, function (err, data) {
     if(err) throw err;
     data.Contents.forEach(file => downloadFile(file.Key))
