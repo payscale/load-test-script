@@ -58,7 +58,7 @@ const pingUrls = (rows) => {
   const numTimes = rows.length - 1;
   const doTheThing = () => {
     const timeBeforeNextPing = new Date(`1970-01-01T${rows[i+1].time}Z`).getTime() - new Date(`1970-01-01T${rows[i].time}Z`).getTime();
-    ping(rows[i]['cs-uri-stem'], rows[i].time);
+    ping(rows[i]['cs-uri-stem'], rows[i].time, numTimes);
     
     i++;
     if (i < numTimes) {
@@ -73,7 +73,7 @@ const pingUrls = (rows) => {
       const totalPingTime = console.timeEnd('totalPingTime');
       const totalDurationSec = (new Date() - initialDate) / 1000;
       const totalReqPerSec = Math.round(i / totalDurationSec * 100) / 100;
-      console.log(`run complete for ${numTimes} requests in time ${totalPingTime}ms`, 
+      console.log(`submit complete for ${numTimes} requests in time ${totalPingTime}ms`, 
                   ` for ${totalReqPerSec} req/sec`,
                   'summary stats of request counts by statusCode:', statusCodeCounts);
     }  
@@ -86,7 +86,8 @@ const pingUrls = (rows) => {
 let statusCodeCounts = {};
 let poolSettings = { maxSockets: 20 };
 let responseCount = 0;
-const ping = (urlStem, time) => {
+console.time('totalResponseTime');
+const ping = (urlStem, time, totalRunCount) => {
 
   request(`${urlHost}${urlStem}`, {time: true, pool: poolSettings}, (err, res, body) => {
     if (err) { return console.log(err); }
@@ -96,6 +97,15 @@ const ping = (urlStem, time) => {
       statusCodeCounts[res.statusCode] = 0;
     }
     statusCodeCounts[res.statusCode]++;
+
+    const reportingIntervalCount = Math.round(totalRunCount / 100);
+    if (responseCount % reportingIntervalCount === 0) {
+      const totalDurationSec = (new Date() - initialDate) / 1000;
+      const totalReqPerSec = Math.round(responseCount / totalDurationSec * 100) / 100;
+      console.log(`ping response status: `,
+                  `Count: ${responseCount} Duration: ${totalDurationSec} Response Req/sec: ${totalReqPerSec}`
+                 );
+    }  
   });
 }
 
