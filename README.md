@@ -13,7 +13,8 @@ These instructions will get this script up and running on your local machine.
 * Install packages: `yarn`
 * Download an hour's worth of logs: `node .\download-cloudfront-logs.js --timestamp <YYYY-dd-mm-hh> --bucketName <cloudfrontLogsBucketName> --cloudfrontId <distribution id> --s3folder <folder where logs are kept>` 
   * NOTE: the timestamp is in UTC
-* Replay the logs against the host of your choice: `node .\load-test.js --urlHost 'www.<yourHost>.com' --prefix '/<the path subset you want to test>' --maxPings 100`
+* Replay the logs against the host of your choice: `node ./load-test.js --urlHost 'www.<yourHost>.com' --prefix '/<the path subset you want to test>' --maxPings 100`
+  * NOTE: if you run out of memory, run node such as with 4gb:`node --max-old-space-size=4096 ...`. 
 
 ### Parameters for download-cloudfront-logs.js
 | Name          | Required      | Description     | Default Value
