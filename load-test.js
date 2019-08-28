@@ -1,7 +1,11 @@
 const fs = require('fs');
 const args = require('yargs').argv;
 const request = require('request');
- 
+
+request.defaults({
+  maxSockets: 20
+});
+
 /** Args:
  * urlHost (required): the url host that you want to load test
  * prefix (optional): string to filter the url paths by (prefix only)
@@ -84,12 +88,11 @@ const pingUrls = (rows) => {
 
 /** The ping function */
 let statusCodeCounts = {};
-let poolSettings = { maxSockets: 20 };
 let responseCount = 0;
 console.time('totalResponseTime');
 const ping = (urlStem, time, totalRunCount) => {
 
-  request(`${urlHost}${urlStem}`, {time: true, pool: poolSettings}, (err, res, body) => {
+  request(`${urlHost}${urlStem}`, {time: true}, (err, res, body) => {
     if (err) { return console.log(err); }
     responseCount++;
     console.log(res.statusCode === 200 ? '\x1b[32m%s\x1b[0m' : res.statusCode === 404 ? "\x1b[33m%s\x1b[0m" : '\x1b[31m%s\x1b[0m', `${time}: Took ${res.elapsedTime}ms; ${urlStem} returned ${res.statusCode}. Count: ${responseCount}`);
