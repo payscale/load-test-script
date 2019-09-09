@@ -11,7 +11,7 @@ These instructions will get this script up and running on your local machine.
 
 ### To Run the load test
 * Install packages: `yarn`
-* Download an hour's worth of logs: `node .\download-cloudfront-logs.js --timestamp <YYYY-dd-mm-hh> --bucketName <cloudfrontLogsBucketName> --cloudfrontId <distribution id> --s3folder <folder where logs are kept>` 
+* Download an hour's worth of logs: `node .\download-cloudfront-logs.js --timestamp <YYYY-MM-DD-HH> --bucketName <cloudfrontLogsBucketName> --cloudfrontId <distribution id> --s3folder <folder where logs are kept>` 
   * NOTE: the timestamp is in UTC
 * Replay the logs against the host of your choice: `node ./load-test.js --urlHost 'www.<yourHost>.com' --prefix '/<the path subset you want to test>' --maxPings 100`
   * NOTE: if you run out of memory, run node such as with 4gb:`node --max-old-space-size=4096 ...`. 
@@ -19,7 +19,7 @@ These instructions will get this script up and running on your local machine.
 ### Parameters for download-cloudfront-logs.js
 | Name          | Required      | Description     | Default Value
 | ------------- |:-------------:| ---------------:|----------------:|
-| timestamp     | required      | A timestamp in the format of: YYYY-mm-dd-hh. This is used to grab all S3 logs with that file prefix           | - 
+| timestamp     | required      | A timestamp in the format of: YYYY-MM-DD-HH. This is used to grab all S3 logs with that file prefix           | - 
 | bucketName    | required      | The S3 bucket that contains the Cloudfront logs | -
 | cloudfrontId  | required      | The ID of the cloudfront distribution in question | -
 | s3folder      | required | The folder within S3 to get logs from | -
